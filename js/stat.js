@@ -7,7 +7,7 @@ var cloudX = 100;
 var cloudY = 10;
 var gap = 50; // расстояние между колонками
 var fontGap = 15; // высота строки
-var barHeight = 150; // высота столбца
+var barHeight = 90; // высота столбца
 var barWidth = 40;
 var nameHeight = cloudHeight;
 var renderCloud = function (ctx, x, y, color) {
@@ -29,7 +29,6 @@ window.renderStatistics = function (ctx, names, times) {
   renderCloud(ctx, cloudX + 10, cloudY + 10, 'rgba(0, 0, 0, 0.7)');
   renderCloud(ctx, cloudX, cloudY, '#fff');
 
-
   ctx.fillStyle = '#000';
   ctx.font = '16px PT Mono';
   ctx.fillText('Ура, вы победили!', cloudX + fontGap, cloudY + 2 * fontGap);
@@ -37,13 +36,15 @@ window.renderStatistics = function (ctx, names, times) {
 
   var maxTime = getMaxElement(times);
 
+
   for (var i = 0; i < names.length; i++) {
+    var randomNumber = parseFloat(Math.random().toFixed(1));
     var randomColor = 'rgba(0, 153, 255, ' + randomNumber + ')';
     ctx.fillStyle = (names[i] === 'Вы') ? 'rgba(255, 0, 0, 1)' : randomColor;
-    console.log(ctx.fillStyle);
-    console.log('randomColor ' + randomColor);
+
     ctx.fillText(names[i], cloudX + gap + (gap + barWidth) * i, nameHeight);
-    ctx.fillRect(cloudX + gap + (gap + barWidth) * i, barHeight * times[i] / maxTime, barWidth, cloudHeight - 2 * fontGap - barHeight * times[i] / maxTime);
+    ctx.fillText(Math.round(times[i]), cloudX + gap + (gap + barWidth) * i, cloudY + 5 * fontGap);
+    ctx.fillRect(cloudX + gap + (gap + barWidth) * i, cloudHeight - fontGap * 2 - barHeight * times[i] / maxTime, barWidth, barHeight * times[i] / maxTime);
   }
 
 };

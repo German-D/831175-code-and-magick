@@ -38,7 +38,10 @@ window.renderStatistics = function (ctx, names, times) {
   var maxTime = getMaxElement(times);
 
   for (var i = 0; i < names.length; i++) {
-    ctx.fillStyle = (names[i] === 'Вы') ? 'rgba(255, 0, 0, 1)' : 'rgba(0, 153, 255, parseFloat(Math.random().toFixed(1))';
+    var randomColor = 'rgba(0, 153, 255, ' + randomNumber + ')';
+    ctx.fillStyle = (names[i] === 'Вы') ? 'rgba(255, 0, 0, 1)' : randomColor;
+    console.log(ctx.fillStyle);
+    console.log('randomColor ' + randomColor);
     ctx.fillText(names[i], cloudX + gap + (gap + barWidth) * i, nameHeight);
     ctx.fillRect(cloudX + gap + (gap + barWidth) * i, barHeight * times[i] / maxTime, barWidth, cloudHeight - 2 * fontGap - barHeight * times[i] / maxTime);
   }

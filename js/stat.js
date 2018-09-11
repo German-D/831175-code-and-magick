@@ -15,14 +15,8 @@ var renderCloud = function (ctx, x, y, color) {
   ctx.fillRect(x, y, cloudWidth, cloudHeight);
 };
 
-var getMaxElement = function (arr) {
-  var maxElement = arr[0];
-
-  for (var i = 1; i < arr.length; i++) {
-    if (arr[i] > maxElement) {
-      maxElement = arr[i];
-    }
-  } return maxElement;
+var renderCongrats = function (ctx, letter, x, y) {
+  ctx.fillText(letter, x, y);
 };
 
 window.renderStatistics = function (ctx, names, times) {
@@ -31,20 +25,21 @@ window.renderStatistics = function (ctx, names, times) {
 
   ctx.fillStyle = '#000';
   ctx.font = '16px PT Mono';
-  ctx.fillText('Ура, вы победили!', cloudX + fontGap, cloudY + 2 * fontGap);
-  ctx.fillText('Список результатов:', cloudX + fontGap, cloudY + 3 * fontGap);
+  renderCongrats(ctx, 'Ура, вы победили!', cloudX + fontGap, cloudY + 2 * fontGap);
+  renderCongrats(ctx, 'Список результатов:', cloudX + fontGap, cloudY + 3 * fontGap);
 
-  var maxTime = getMaxElement(times);
+  var maxTime = Math.max.apply(Math, times);
 
+  names.forEach(function (item, i) {
+    var currentColumnX = cloudX + gap + (gap + barWidth) * i;
+    var currentColumnY = cloudHeight - fontGap * 2 - barHeight * times[i] / maxTime;
+    var currentColumnHeight = barHeight * times[i] / maxTime;
+    var randomNumber = parseFloat(Math.random().toFixed(2));
+    var randomColor = 'rgba(0, 0, 255, ' + randomNumber + ')';
 
-  for (var i = 0; i < names.length; i++) {
-    var randomNumber = parseFloat(Math.random().toFixed(1));
-    var randomColor = 'rgba(0, 153, 255, ' + randomNumber + ')';
-    ctx.fillStyle = (names[i] === 'Вы') ? 'rgba(255, 0, 0, 1)' : randomColor;
-
-    ctx.fillText(names[i], cloudX + gap + (gap + barWidth) * i, nameHeight);
-    ctx.fillText(Math.round(times[i]), cloudX + gap + (gap + barWidth) * i, cloudY + 5 * fontGap);
-    ctx.fillRect(cloudX + gap + (gap + barWidth) * i, cloudHeight - fontGap * 2 - barHeight * times[i] / maxTime, barWidth, barHeight * times[i] / maxTime);
-  }
-
+    ctx.fillStyle = item === 'Вы' ? 'rgba(255, 0, 0, 1)' : randomColor;
+    ctx.fillText(item, currentColumnX, nameHeight);
+    ctx.fillText(Math.round(times[i]), currentColumnX, cloudHeight - 3 * fontGap - currentColumnHeight);
+    ctx.fillRect(currentColumnX, currentColumnY, barWidth, currentColumnHeight);
+  });
 };

@@ -28,26 +28,26 @@ var renderCongrats = function (ctx, arr, x, y) {
   }
 };
 
-var renderColumn = function (ctx, x, y, width, height, names, namesX, namesY, times, timesY) {
-  ctx.fillRect(x, y, width, height);
-  ctx.fillText(names, namesX, namesY);
-  ctx.fillText(times, namesX, timesY);
+var renderColumn = function (ctx, arr, arr2) {
+  var maxTime = Math.max.apply(null, arr);
+
+  arr2.forEach(function (item, i) {
+    var currentColumnX = cloudX + gap + (gap + barWidth) * i;
+    var currentColumnY = cloudHeight - fontGap * 2 - barHeight * arr[i] / maxTime;
+    var currentColumnHeight = barHeight * arr[i] / maxTime;
+    var randomNumber = parseFloat(Math.random().toFixed(2) || 1);
+    var randomColor = 'rgba(0, 0, 255, ' + randomNumber + ')';
+    var time = Math.round(arr[i]);
+
+    ctx.fillStyle = item === 'Вы' ? 'rgba(255, 0, 0, 1)' : randomColor;
+    ctx.fillRect(currentColumnX, currentColumnY, barWidth, currentColumnHeight);
+    ctx.fillText(item, currentColumnX, nameHeight);
+    ctx.fillText(time, currentColumnX, cloudHeight - 3 * fontGap - currentColumnHeight);
+  });
 };
 
 window.renderStatistics = function (ctx, names, times) {
-  var maxTime = Math.max.apply(null, times);
   renderCloud(ctx, cloudX + 10, cloudY + 10, 'rgba(0, 0, 0, 0.7)', cloudX, cloudY, '#fff');
   renderCongrats(ctx, letters, cloudX + 2 * fontGap, letterY);
-
-  names.forEach(function (item, i) {
-    var currentColumnX = cloudX + gap + (gap + barWidth) * i;
-    var currentColumnY = cloudHeight - fontGap * 2 - barHeight * times[i] / maxTime;
-    var currentColumnHeight = barHeight * times[i] / maxTime;
-    var randomNumber = parseFloat(Math.random().toFixed(2) || 1);
-    var randomColor = 'rgba(0, 0, 255, ' + randomNumber + ')';
-    var time = Math.round(times[i]);
-
-    ctx.fillStyle = item === 'Вы' ? 'rgba(255, 0, 0, 1)' : randomColor;
-    renderColumn(ctx, currentColumnX, currentColumnY, barWidth, currentColumnHeight, item, currentColumnX, nameHeight, time, cloudHeight - 3 * fontGap - currentColumnHeight);
-  });
+  renderColumn(ctx, times, names);
 };

@@ -5,7 +5,7 @@ var cloudHeight = 270;
 
 var cloudX = 100;
 var cloudY = 10;
-var letterY = 25;
+var letterY = 35;
 var gap = 50; // расстояние между колонками
 var fontGap = 15; // высота строки
 var barHeight = 150; // высота столбца
@@ -23,8 +23,8 @@ var renderCloud = function (ctx, shadowX, shadowY, shadowColor, x, y, color) {
 var renderCongrats = function (ctx, arr, x, y) {
   ctx.fillStyle = 'black';
   ctx.font = '16px PT Mono';
-  for (var j = 1; j <= arr.length; j++) {
-    ctx.fillText(arr[j], x, y * j);
+  for (var j = 0; j < arr.length; j++) {
+    ctx.fillText(arr[j], x, y + j * 0.4 * y);
   }
 };
 
@@ -37,7 +37,7 @@ var renderColumn = function (ctx, x, y, width, height, names, namesX, namesY, ti
 window.renderStatistics = function (ctx, names, times) {
   var maxTime = Math.max.apply(null, times);
   renderCloud(ctx, cloudX + 10, cloudY + 10, 'rgba(0, 0, 0, 0.7)', cloudX, cloudY, '#fff');
-  renderCongrats(ctx, letters, cloudX + fontGap, letterY);
+  renderCongrats(ctx, letters, cloudX + 2 * fontGap, letterY);
 
   names.forEach(function (item, i) {
     var currentColumnX = cloudX + gap + (gap + barWidth) * i;

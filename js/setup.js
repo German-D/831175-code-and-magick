@@ -3,7 +3,6 @@ var showElement = function (classSelector, classRemove) {
   document.querySelector('.' + classSelector).classList.remove(classRemove);
 };
 
-showElement('overlay', 'hidden');
 showElement('setup-similar', 'hidden');
 
 var manyNames = ['Иван', 'Хуан', 'Себастьян', 'Мария', 'Кристоф', 'Юлия', 'Люпита', 'Вашингтон'];
@@ -55,6 +54,7 @@ var renderWizard = function (sameMages) {
 };
 
 renderWizard(createManyMages(4));
+
 var setupWindow = document.querySelector('.setup');
 var setupOpen = document.querySelector('.setup-open');
 var setupClose = document.querySelector('.setup-close');
@@ -65,34 +65,44 @@ var fireballsColorInput = document.querySelector('input[name="fireball-color"]')
 var coatColorElement = document.querySelector('.setup-wizard').querySelector('.wizard-coat');
 var eyeColorElement = document.querySelector('.setup-wizard').querySelector('.wizard-eyes');
 var fireballElement = document.querySelector('.setup-fireball-wrap');
-
-setupOpen.addEventListener('click', function () {
+var escKeyCode = 27;
+var enterKeyCode = 13;
+var onFormShow = function () {
   setupWindow.classList.remove('hidden');
-});
-setupClose.addEventListener('click', function () {
+  document.addEventListener('keydown', onPopupEscPress);
+};
+var onFormHide = function () {
   setupWindow.classList.add('hidden');
-});
-
-
-setupOpen.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === 13) {
-    setupWindow.classList.remove('hidden');
+  document.removeEventListener('keydown', onPopupEscPress);
+};
+var onKeyFormShow = function (evt) {
+  if (evt.keyCode === enterKeyCode) {
+    onFormShow();
   }
-});
+};
 
-document.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === 27) {
-    setupWindow.classList.add('hidden');
+var onKeyFormClose = function (evt) {
+  if (evt.keyCode === enterKeyCode) {
+    onFormHide();
   }
-});
+};
 
-setupClose.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === 13) {
-    setupWindow.classList.add('hidden');
-  }
-});
+var onInputCoat = function () {
+  coatColorElement.style.fill = manyCoatColor[randomNumber(manyCoatColor.length - 1)];
+  coatColorInput.value = coatColorElement.style.fill;
+};
 
-userNameInput.addEventListener('invalid', function () {
+var onInputEye = function () {
+  eyeColorElement.style.fill = manyEyesColor[randomNumber(manyEyesColor.length - 1)];
+  eyesColorInput.value = eyeColorElement.style.fill;
+};
+
+var onInputFireballs = function () {
+  fireballElement.style.background = manyFireballs[randomNumber(manyFireballs.length - 1)];
+  fireballsColorInput.value = fireballElement.style.background;
+};
+
+var onInputValidity = function () {
   if (userNameInput.validity.tooShort) {
     userNameInput.setCustomValidity('Имя должно состоять минимум из 2-х символов');
   } else if (userNameInput.validity.tooLong) {
@@ -100,21 +110,31 @@ userNameInput.addEventListener('invalid', function () {
   } else if (userNameInput.validity.valueMissing) {
     userNameInput.setCustomValidity('Обязательное поле');
   }
-});
+};
 
-coatColorElement.addEventListener('click', function () {
-  coatColorElement.style.fill = manyCoatColor[randomNumber(manyCoatColor.length - 1)];
-  coatColorInput.value = coatColorElement.style.fill;
-});
+var onPopupEscPress = function (evt) {
+  if (evt.keyCode === escKeyCode) {
+    onFormHide();
+  }
+};
 
-eyeColorElement.addEventListener('click', function () {
-  eyeColorElement.style.fill = manyEyesColor[randomNumber(manyEyesColor.length - 1)];
-  eyesColorInput.value = eyeColorElement.style.fill;
-});
+var onInputFocus = function () {
+  document.removeEventListener('keydown', onPopupEscPress);
+};
 
-fireballElement.addEventListener('click', function () {
-  fireballElement.style.background = manyFireballs[randomNumber(manyFireballs.length - 1)];
-  fireballsColorInput.value = fireballElement.style.background;
-});
+var onInputBlur = function () {
+  document.addEventListener('keydown', onPopupEscPress);
+};
+
+setupOpen.addEventListener('click', onFormShow);
+setupClose.addEventListener('click', onFormHide);
+setupOpen.addEventListener('keydown', onKeyFormShow);
+setupClose.addEventListener('keydown', onKeyFormClose);
+userNameInput.addEventListener('invalid', onInputValidity);
+coatColorElement.addEventListener('click', onInputCoat);
+eyeColorElement.addEventListener('click', onInputEye);
+fireballElement.addEventListener('click', onInputFireballs);
+userNameInput.addEventListener('focus', onInputFocus);
+userNameInput.addEventListener('blur', onInputBlur);
 
 
